@@ -20,10 +20,17 @@ public class NoticeService {
 		return list;
 	}
 	
-	public int noticeListCount() {
+	public int selectListCount() {
 		Connection conn = getConnection();
-		int result = dao.noticeListCount(conn);
+		int result = dao.selectListCount(conn);
 		close(conn);
 		return result;
+	}
+	
+	public Notice selectOne(int no) {
+		Connection conn = getConnection();
+		Notice n = dao.selectOne(conn,no);
+		close(conn);
+		return n;
 	}
 }

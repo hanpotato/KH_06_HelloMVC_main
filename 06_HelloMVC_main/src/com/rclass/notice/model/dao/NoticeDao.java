@@ -32,8 +32,8 @@ public class NoticeDao {
 		String sql = prop.getProperty("noticelist");
 		try {
 			pstmt = conn.prepareStatement(sql);
-			pstmt.setInt(1, cPage);
-			pstmt.setInt(2, numPerPage);
+			pstmt.setInt(1, (cPage-1)*numPerPage+1);
+			pstmt.setInt(2, cPage*numPerPage);
 			rs = pstmt.executeQuery();
 			while(rs.next()) {
 				Notice no = new Notice();
@@ -54,7 +54,7 @@ public class NoticeDao {
 		return list;
 	}
 	
-	public int noticeListCount(Connection conn) {
+	public int selectListCount(Connection conn) {
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
 		int result = 0;
@@ -62,7 +62,7 @@ public class NoticeDao {
 		try {
 			pstmt= conn.prepareStatement(sql);
 			rs = pstmt.executeQuery();
-			while(rs.next()) {
+			if(rs.next()) {
 				result = rs.getInt("cnt");
 			}
 			
@@ -73,5 +73,32 @@ public class NoticeDao {
 			close(pstmt);
 		}
 		return result;
+	}
+	
+	public Notice selectOne(Connection conn, int no) {
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		Notice n = null;
+		String sql = prop.getProperty("selectOne");
+		try {
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setInt(1, no);
+			rs = pstmt.executeQuery();
+			if(rs.next()) {
+				n = new Notice();
+				n.setNoticeNo(rs.getInt("notice_no"));
+				n.setNoticeTitle(rs.getString("notice_title"));
+				n.setNoticeWriter(rs.getString("notice_writer"));
+				n.setNoticeContent(rs.getString("notice_content"));
+				n.setNoticeDate(rs.getDate("notice_date"));
+				n.setFilepath(rs.getString("filepath"));
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			close(rs);
+			close(pstmt);
+		}
+		return n;
 	}
 }

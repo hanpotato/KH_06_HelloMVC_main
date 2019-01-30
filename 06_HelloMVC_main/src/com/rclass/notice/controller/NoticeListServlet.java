@@ -46,7 +46,7 @@ public class NoticeListServlet extends HttpServlet {
 			numPerPage = 5;
 		}
 		
-		int totalContent = new NoticeService().noticeListCount();
+		int totalContent = new NoticeService().selectListCount();
 		List<Notice> list = new NoticeService().selectList(cPage,numPerPage);
 		
 		int totalPage = (int)Math.ceil((double)totalContent/numPerPage);

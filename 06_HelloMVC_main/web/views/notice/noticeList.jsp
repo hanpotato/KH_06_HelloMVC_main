@@ -33,7 +33,7 @@
 		<% for(Notice n:list) { %>
 			<tr>
 				<td><%= n.getNoticeNo() %></td>
-				<td><%= n.getNoticeTitle() %></td>
+				<td><a href="<%= request.getContextPath() %>/notice/noticeView?noticeNo=<%= n.getNoticeNo() %>"><%= n.getNoticeTitle() %></a></td>
 				<td><%= n.getNoticeWriter() %></td>
 				<td>
 				<% if(n.getFilepath()!=null) { %>
@@ -44,8 +44,9 @@
 			</tr>
 		<% } %>
 	</table>
-	<br>
-	<%= pageBar %>
+	<div id="pageBar">
+		<%= pageBar %>
+	</div>
 </section>
 
 <%@ include file="/views/common/footer.jsp" %>
