@@ -78,6 +78,8 @@ public class NoticeDao {
 	public Notice selectOne(Connection conn, int no) {
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
+		// Notice n = new Notice();
+		// 여기서 new를 선언하게 되면 컨트롤러 부분에서 null값을 이용한 분기 처리를 다시 고민해야 한다. 선언하는 순간 n값은 null이 안되기 때문이다.
 		Notice n = null;
 		String sql = prop.getProperty("selectOne");
 		try {
@@ -136,6 +138,58 @@ public class NoticeDao {
 			e.printStackTrace();
 		} finally {
 			close(rs);
+			close(pstmt);
+		}
+		return result;
+	}
+	
+	public int updateNotice(Connection conn, Notice n) {
+		PreparedStatement pstmt = null;
+		int updateResult = 0;
+		String sql = prop.getProperty("updateNotice");
+		try {
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1, n.getNoticeTitle());
+			pstmt.setString(2, n.getNoticeWriter());
+			pstmt.setString(3, n.getNoticeContent());
+			pstmt.setString(4, n.getFilepath());
+			pstmt.setInt(5, n.getNoticeNo());
+			updateResult = pstmt.executeUpdate();
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			close(pstmt);
+		}
+		return updateResult;
+	}
+	
+	public int deleteNotice(Connection conn, int no) {
+		PreparedStatement pstmt = null;
+		int result = 0;
+		String sql = prop.getProperty("deleteNotice");
+		try {
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setInt(1, no);
+			result = pstmt.executeUpdate();
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			close(pstmt);
+		}
+		return result;
+	}
+	
+	public int dropNotice(Connection conn, int no) {
+		PreparedStatement pstmt = null;
+		int result = 0;
+		String sql = prop.getProperty("dropNotice");
+		try {
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setInt(1, no);
+			result = pstmt.executeUpdate();
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
 			close(pstmt);
 		}
 		return result;

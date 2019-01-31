@@ -13,7 +13,14 @@
     section#notice-container h2{margin:10px 0;}
     table#tbl-notice{width:500px; margin:0 auto; border:1px solid black; border-collapse:collapse; clear:both; }
     table#tbl-notice th {width: 125px; border:1px solid; padding: 5px 0; text-align:center;} 
-    table#tbl-notice td {border:1px solid; padding: 5px 0 5px 10px; text-align:left;}
+    table#tbl-notice td {border:1px solid; padding: 5px 0 5px 10px; text-align:left;position:relative;}
+        span#fname {
+    	position:absolute;
+    	left:35px;
+    	top:5px;
+    	width:285px;
+    	background-color:#fff;
+    }
 </style>
 
 <section id="notice-container">
@@ -30,7 +37,16 @@
 			<th>첨부파일</th>
 			<td>
 				<% if(n.getFilepath() != null ) { %>
-					<img alt="첨부파일" src="<%= request.getContextPath() %>/images/file.png" width="16px"/>
+					<a href="javascript:fn_fileDown('<%= n.getFilepath() %>')">
+						<img alt="첨부파일" src="<%= request.getContextPath() %>/images/file.png" width="16px"/>
+						<span id="fname"><%= n.getFilepath() %></span>
+					</a>
+					<script>
+						function fn_fileDown(fname) {
+							fname = encodeURIComponent(fname);
+							location.href="<%= request.getContextPath() %>/notice/noticeFileDownload?fname="+fname;
+						}
+					</script>
 				<% } %>
 			</td>
 		</tr>
@@ -41,10 +57,23 @@
 		<tr>
 			<td colspan="2">
 				<input type="button" value="수정하기" onclick="fn_updateNotice()"/>
-				<input type="button" value="삭제하기" onclick="fn_deleteNotice()"/>
+				<input type="button" value="삭제(임시)" onclick="fn_deleteNotice()"/>
+				<input type="button" value="삭제하기(완전삭제)" onclick="fn_dropNotice()"/>
+				
 			</td>
 		</tr>
 	</table>
+	<script>
+		function fn_updateNotice() {
+			location.href = "<%= request.getContextPath() %>/notice/noticeUpdate?no=<%= n.getNoticeNo() %>";
+		}
+		function fn_deleteNotice() {
+			location.href = "<%= request.getContextPath() %>/notice/noticeDelete?no=<%= n.getNoticeNo() %>";
+		}
+		function fn_dropNotice() {
+			location.href = "<%= request.getContextPath() %>/notice/noticeDrop?no=<%= n.getNoticeNo() %>";
+		}
+	</script>
 </section>
 
 <%@ include file="/views/common/footer.jsp" %>

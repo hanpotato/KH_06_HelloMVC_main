@@ -49,4 +49,43 @@ public class NoticeService {
 		close(conn);
 		return insertResult;
 	}
+	
+	public int updateNotice(Notice n) {
+		Connection conn = getConnection();
+		int updateResult = dao.updateNotice(conn,n);
+		if(updateResult>0) {
+			commit(conn);
+		}
+		else {
+			rollback(conn);
+		}
+		close(conn);
+		return updateResult;
+	}
+	
+	public int deleteNotice(int no) {
+		Connection conn = getConnection();
+		int result = dao.deleteNotice(conn,no);
+		if(result>0) {
+			commit(conn);
+		}
+		else {
+			rollback(conn);
+		}
+		close(conn);
+		return result;
+	}
+	
+	public int dropNotice(int no) {
+		Connection conn = getConnection();
+		int result = dao.dropNotice(conn,no);
+		if(result>0) {
+			commit(conn);
+		}
+		else {
+			rollback(conn);
+		}
+		close(conn);
+		return result;
+	}
 }

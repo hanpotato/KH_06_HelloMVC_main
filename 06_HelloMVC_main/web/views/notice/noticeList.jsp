@@ -48,9 +48,15 @@
 				<td><%= n.getNoticeWriter() %></td>
 				<td>
 				<% if(n.getFilepath()!=null) { %>
-					<a href="<c:url value='<%= request.getContextPath() %>/upload/notice/<%= n.getFilepath() %>'">
+					<a href="javascript:fn_fileDown('<%= n.getFilepath() %>')">
 						<img alt='첨부파일' src="<%=request.getContextPath() %>/images/file.png" width="16px">
 					</a>
+					<script>
+						function fn_fileDown(fname) {
+							fname = encodeURIComponent(fname);
+							location.href = "<%= request.getContextPath() %>/notice/noticeFileDownload?fname="+fname;
+						}
+					</script>
 				<% } %>
 				</td>
 				<td><%= n.getNoticeDate() %></td>
