@@ -17,11 +17,22 @@
 	section#notice-container h2{margin:10px 0;}
 	table#tbl-notice{width:100%; margin:0 auto; border:1px solid black; border-collapse:collapse;}
 	table#tbl-notice th, table#tbl-notice td {border:1px solid; padding: 5px 0; text-align:center;} 
+	input#btn-add{float:right;margin:0 0 15px;}
 </style>
 
 <section id="notice-container">
 	<br>
 	<h2>공지사항</h2>
+	<% if(loginMember != null && "admin".equals(loginMember.getUserId())) { %>
+	<input type="button" value="글쓰기" id="btn-add" onclick="fn_noticeForm()"/>
+	<% } %>
+	
+	<script>
+		function fn_noticeForm() {
+			location.href="<%= request.getContextPath() %>/notice/noticeForm";
+		}
+	</script>
+	
 	<table id="tbl-notice">
 		<tr>
 			<th>번호</th>
@@ -37,7 +48,9 @@
 				<td><%= n.getNoticeWriter() %></td>
 				<td>
 				<% if(n.getFilepath()!=null) { %>
-					<img alt='첨부파일' src="<%=request.getContextPath() %>/images/file.png" width="16px">
+					<a href="<c:url value='<%= request.getContextPath() %>/upload/notice/<%= n.getFilepath() %>'">
+						<img alt='첨부파일' src="<%=request.getContextPath() %>/images/file.png" width="16px">
+					</a>
 				<% } %>
 				</td>
 				<td><%= n.getNoticeDate() %></td>
