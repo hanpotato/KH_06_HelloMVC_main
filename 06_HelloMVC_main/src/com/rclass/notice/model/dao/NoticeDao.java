@@ -43,6 +43,37 @@ public class NoticeDao {
 				no.setNoticeContent(rs.getString("notice_content"));
 				no.setNoticeDate(rs.getDate("notice_date"));
 				no.setFilepath(rs.getString("filepath"));
+				no.setStatus(rs.getString("status"));
+				list.add(no);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			close(rs);
+			close(pstmt);
+		}
+		return list;
+	}
+	
+	public List<Notice> selectDelList(Connection conn, int cPage, int numPerPage) {
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		List<Notice> list = new ArrayList();
+		String sql = prop.getProperty("selectDelList");
+		try {
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setInt(1, (cPage-1)*numPerPage+1);
+			pstmt.setInt(2, cPage*numPerPage);
+			rs = pstmt.executeQuery();
+			while(rs.next()) {
+				Notice no = new Notice();
+				no.setNoticeNo(rs.getInt("notice_no"));
+				no.setNoticeTitle(rs.getString("notice_title"));
+				no.setNoticeWriter(rs.getString("notice_writer"));
+				no.setNoticeContent(rs.getString("notice_content"));
+				no.setNoticeDate(rs.getDate("notice_date"));
+				no.setFilepath(rs.getString("filepath"));
+				no.setStatus(rs.getString("status"));
 				list.add(no);
 			}
 		} catch (Exception e) {
@@ -59,6 +90,27 @@ public class NoticeDao {
 		ResultSet rs = null;
 		int result = 0;
 		String sql = prop.getProperty("noticeListCount");
+		try {
+			pstmt= conn.prepareStatement(sql);
+			rs = pstmt.executeQuery();
+			if(rs.next()) {
+				result = rs.getInt("cnt");
+			}
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			close(rs);
+			close(pstmt);
+		}
+		return result;
+	}
+	
+	public int selectDelListCount(Connection conn) {
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		int result = 0;
+		String sql = prop.getProperty("selectDelListCount");
 		try {
 			pstmt= conn.prepareStatement(sql);
 			rs = pstmt.executeQuery();
@@ -94,6 +146,7 @@ public class NoticeDao {
 				n.setNoticeContent(rs.getString("notice_content"));
 				n.setNoticeDate(rs.getDate("notice_date"));
 				n.setFilepath(rs.getString("filepath"));
+				n.setStatus(rs.getString("status"));
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -167,6 +220,22 @@ public class NoticeDao {
 		PreparedStatement pstmt = null;
 		int result = 0;
 		String sql = prop.getProperty("deleteNotice");
+		try {
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setInt(1, no);
+			result = pstmt.executeUpdate();
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			close(pstmt);
+		}
+		return result;
+	}
+	
+	public int restoreNotice(Connection conn, int no) {
+		PreparedStatement pstmt = null;
+		int result = 0;
+		String sql = prop.getProperty("restoreNotice");
 		try {
 			pstmt = conn.prepareStatement(sql);
 			pstmt.setInt(1, no);

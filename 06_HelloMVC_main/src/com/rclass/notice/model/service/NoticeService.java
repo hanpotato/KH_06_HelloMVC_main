@@ -22,9 +22,23 @@ public class NoticeService {
 		return list;
 	}
 	
+	public List<Notice> selectDelList(int cPage, int numPerPage) {
+		Connection conn = getConnection();
+		List<Notice> list = dao.selectDelList(conn,cPage,numPerPage);
+		close(conn);
+		return list;
+	}
+	
 	public int selectListCount() {
 		Connection conn = getConnection();
 		int result = dao.selectListCount(conn);
+		close(conn);
+		return result;
+	}
+	
+	public int selectDelListCount() {
+		Connection conn = getConnection();
+		int result = dao.selectDelListCount(conn);
 		close(conn);
 		return result;
 	}
@@ -66,6 +80,19 @@ public class NoticeService {
 	public int deleteNotice(int no) {
 		Connection conn = getConnection();
 		int result = dao.deleteNotice(conn,no);
+		if(result>0) {
+			commit(conn);
+		}
+		else {
+			rollback(conn);
+		}
+		close(conn);
+		return result;
+	}
+	
+	public int restoreNotice(int no) {
+		Connection conn = getConnection();
+		int result = dao.restoreNotice(conn,no);
 		if(result>0) {
 			commit(conn);
 		}

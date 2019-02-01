@@ -27,7 +27,12 @@
 	<table id="tbl-notice">
 		<tr>
 			<th>제목</th>
-			<td><%= n.getNoticeTitle() %></td>
+			<td>
+				<% if(n.getStatus().equals("N")) { %>
+					<span>[삭제상태]</span>
+				<% } %>
+				<%= n.getNoticeTitle() %>
+			</td>
 		</tr>
 		<tr>
 			<th>작성자</th>
@@ -57,9 +62,12 @@
 		<tr>
 			<td colspan="2">
 				<input type="button" value="수정하기" onclick="fn_updateNotice()"/>
-				<input type="button" value="삭제(임시)" onclick="fn_deleteNotice()"/>
-				<input type="button" value="삭제하기(완전삭제)" onclick="fn_dropNotice()"/>
-				
+				<% if(n.getStatus().equals("Y")) { %>
+					<input type="button" value="삭제(임시)" onclick="fn_deleteNotice()"/>
+				<% } else { %>
+					<input type="button" value="복구하기" onclick="fn_restoreNotice()"/>
+					<input type="button" value="삭제하기(완전삭제)" onclick="fn_dropNotice()"/>
+				<% } %>				
 			</td>
 		</tr>
 	</table>
@@ -70,8 +78,11 @@
 		function fn_deleteNotice() {
 			location.href = "<%= request.getContextPath() %>/notice/noticeDelete?no=<%= n.getNoticeNo() %>";
 		}
+		function fn_restoreNotice() {
+			location.href = "<%= request.getContextPath() %>/notice/noticeRestore?no=<%= n.getNoticeNo() %>";
+		}
 		function fn_dropNotice() {
-			location.href = "<%= request.getContextPath() %>/notice/noticeDrop?no=<%= n.getNoticeNo() %>";
+			location.href = "<%= request.getContextPath() %>/notice/noticeDrop?no=<%= n.getNoticeNo() %>&fileName=<%= n.getFilepath() %>";
 		}
 	</script>
 </section>

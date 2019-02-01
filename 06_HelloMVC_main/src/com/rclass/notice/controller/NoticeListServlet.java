@@ -46,8 +46,22 @@ public class NoticeListServlet extends HttpServlet {
 			numPerPage = 5;
 		}
 		
-		int totalContent = new NoticeService().selectListCount();
-		List<Notice> list = new NoticeService().selectList(cPage,numPerPage);
+		boolean delListFlag = true;
+		if(request.getParameter("delListFlag")!=null) {
+			delListFlag = Boolean.parseBoolean(request.getParameter("delListFlag"));
+		}
+		
+		int totalContent = 0;
+		List<Notice> list = null;
+		if(delListFlag) {
+			totalContent = new NoticeService().selectListCount();
+			list = new NoticeService().selectList(cPage,numPerPage);
+		}
+		else {
+			totalContent = new NoticeService().selectDelListCount();
+			list = new NoticeService().selectDelList(cPage,numPerPage);
+			delListFlag = false;
+		}
 		
 		int totalPage = (int)Math.ceil((double)totalContent/numPerPage);
 		int pageBarSize = 5;
@@ -79,6 +93,7 @@ public class NoticeListServlet extends HttpServlet {
 		request.setAttribute("pageBar", pageBar);
 		request.setAttribute("cPage", cPage);
 		request.setAttribute("numPerPage", numPerPage);
+		request.setAttribute("delListFlag", delListFlag);
 		request.getRequestDispatcher("/views/notice/noticeList.jsp").forward(request, response);
 
 	}

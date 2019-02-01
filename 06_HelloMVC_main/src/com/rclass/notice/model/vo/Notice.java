@@ -10,13 +10,14 @@ public class Notice {
 	private String noticeContent;
 	private Date noticeDate;
 	private String filepath;
+	private String status;
 	
 	public Notice() {
 		// TODO Auto-generated constructor stub
 	}
 
 	public Notice(int noticeNo, String noticeTitle, String noticeWriter, String noticeContent, Date noticeDate,
-			String filepath) {
+			String filepath, String status) {
 		super();
 		this.noticeNo = noticeNo;
 		this.noticeTitle = noticeTitle;
@@ -24,6 +25,7 @@ public class Notice {
 		this.noticeContent = noticeContent;
 		this.noticeDate = noticeDate;
 		this.filepath = filepath;
+		this.status = status;
 	}
 
 	public int getNoticeNo() {
@@ -74,10 +76,19 @@ public class Notice {
 		this.filepath = filepath;
 	}
 
+	public String getStatus() {
+		return status;
+	}
+
+	public void setStatus(String status) {
+		this.status = status;
+	}
+
 	@Override
 	public String toString() {
 		return "Notice [noticeNo=" + noticeNo + ", noticeTitle=" + noticeTitle + ", noticeWriter=" + noticeWriter
-				+ ", noticeContent=" + noticeContent + ", noticeDate=" + noticeDate + ", filepath=" + filepath + "]";
+				+ ", noticeContent=" + noticeContent + ", noticeDate=" + noticeDate + ", filepath=" + filepath
+				+ ", status=" + status + "]";
 	}
 	
 	
