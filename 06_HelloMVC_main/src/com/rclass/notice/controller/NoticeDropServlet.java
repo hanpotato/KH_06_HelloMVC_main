@@ -38,16 +38,14 @@ public class NoticeDropServlet extends HttpServlet {
 		String root = getServletContext().getRealPath("/");
 		String filePath = root+File.separator+"upload"+File.separator+"notice";
 		
-		//파일 삭제
-		File delFile = new File(filePath+"/"+fileName);
-		boolean delResult = delFile.delete();
-		System.out.println(delResult?fileName+" : 제대로 지워짐":fileName+" : 안 지워짐.");
-		
-		
 		String msg="";
 		String loc="";
 		String view="/views/common/msg.jsp";
 		if(result>0) {
+			//파일 삭제
+			File delFile = new File(filePath+"/"+fileName);
+			boolean delResult = delFile.delete();
+			System.out.println(delResult?fileName+" : 제대로 지워짐":fileName+" : 안 지워짐.");
 			msg="공지사항 삭제(완전삭제) 성공";
 			loc="/notice/noticeList";
 		}

@@ -1,4 +1,4 @@
-package com.rclass.notice.controller;
+package com.rclass.board.controller;
 
 import java.io.IOException;
 import java.util.List;
@@ -9,20 +9,20 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.rclass.notice.model.service.NoticeService;
-import com.rclass.notice.model.vo.Notice;
+import com.rclass.board.model.service.BoardService;
+import com.rclass.board.model.vo.Board;
 
 /**
- * Servlet implementation class NoticeListServlet
+ * Servlet implementation class BoardListServlet
  */
-@WebServlet("/notice/noticeList")
-public class NoticeListServlet extends HttpServlet {
+@WebServlet("/board/boardList")
+public class BoardListServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
     /**
      * @see HttpServlet#HttpServlet()
      */
-    public NoticeListServlet() {
+    public BoardListServlet() {
         super();
         // TODO Auto-generated constructor stub
     }
@@ -31,7 +31,7 @@ public class NoticeListServlet extends HttpServlet {
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-
+		
 		
 		int cPage;
 		try {
@@ -43,46 +43,28 @@ public class NoticeListServlet extends HttpServlet {
 		try {
 			numPerPage = Integer.parseInt(request.getParameter("numPerPage"));
 		} catch (Exception e) {
-			numPerPage = 5;
+			numPerPage=5;
 		}
-		
-		boolean delListFlag;
-		if(request.getParameter("delListFlag")!=null) {
-			delListFlag = Boolean.parseBoolean(request.getParameter("delListFlag"));
-		}
-		else {
-			delListFlag = true;
-		}
-		
-		int totalContent = 0;
-		List<Notice> list = null;
-		if(delListFlag) {
-			totalContent = new NoticeService().selectListCount();
-			list = new NoticeService().selectList(cPage,numPerPage);
-		}
-		else {
-			totalContent = new NoticeService().selectDelListCount();
-			list = new NoticeService().selectDelList(cPage,numPerPage);
-			delListFlag = false;
-		}
+		int totalContent = new BoardService().selectListCount();
+		List<Board> list = new BoardService().selectList(cPage,numPerPage);
 		
 		int totalPage = (int)Math.ceil((double)totalContent/numPerPage);
 		int pageBarSize = 5;
-		int pageNo=((cPage-1)/pageBarSize)*pageBarSize+1;
-		int pageEnd=pageNo+pageBarSize-1;
+		int pageNo = ((cPage-1)/pageBarSize)*pageBarSize+1;
+		int pageEnd = pageNo+pageBarSize-1;
 		String pageBar="";
 		if(pageNo==1) {
 			pageBar+="<span>[이전]</span>";
 		}
 		else {
-			pageBar+="<a href='"+request.getContextPath()+"/notice/noticeList?cPage="+(pageNo-1)+"&numPerPage="+numPerPage+"'[이전]</a>";
+			pageBar+="<a href='"+request.getContextPath()+"/board/boardList?cPage="+(cPage-1)+"&numPerPage="+numPerPage+"'>[이전]</a>";
 		}
 		while(!(pageNo>pageEnd||pageNo>totalPage)) {
 			if(cPage==pageNo) {
 				pageBar+="<span class='cPage'>"+pageNo+"</span>";
 			}
 			else {
-				pageBar+="<a href='"+request.getContextPath()+"/notice/noticeList?cPage="+pageNo+"&numPerPage="+numPerPage+"'>"+pageNo+"</a>";
+				pageBar+="<a href='"+request.getContextPath()+"/board/boardList?cPage="+pageNo+"&numPerPage="+numPerPage+"'>"+pageNo+"</a>";
 			}
 			pageNo++;
 		}
@@ -90,15 +72,14 @@ public class NoticeListServlet extends HttpServlet {
 			pageBar+="<span>[다음]</span>";
 		}
 		else {
-			pageBar+="<a href='"+request.getContextPath()+"/notice/noticeList?cPage="+pageNo+"&numPerPage"+numPerPage+"'>[다음]</a>";
+			pageBar+="<a href='"+request.getContextPath()+"/board/boardList?cPage="+pageNo+"&numPerPage"+numPerPage+"'>[다음]</a>";
 		}
+		
 		request.setAttribute("list", list);
 		request.setAttribute("pageBar", pageBar);
 		request.setAttribute("cPage", cPage);
 		request.setAttribute("numPerPage", numPerPage);
-		request.setAttribute("delListFlag", delListFlag);
-		request.getRequestDispatcher("/views/notice/noticeList.jsp").forward(request, response);
-
+		request.getRequestDispatcher("/views/board/boardList.jsp").forward(request, response);
 	}
 
 	/**

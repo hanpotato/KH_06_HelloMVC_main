@@ -76,7 +76,10 @@
 			location.href = "<%= request.getContextPath() %>/notice/noticeUpdate?no=<%= n.getNoticeNo() %>";
 		}
 		function fn_deleteNotice() {
-			location.href = "<%= request.getContextPath() %>/notice/noticeDelete?no=<%= n.getNoticeNo() %>";
+			var flag = confirm("게시물을 지우시겠습니까?");
+			if(flag) {
+				location.href = "<%= request.getContextPath() %>/notice/noticeDelete?no=<%= n.getNoticeNo() %>";
+			}
 		}
 		function fn_restoreNotice() {
 			location.href = "<%= request.getContextPath() %>/notice/noticeRestore?no=<%= n.getNoticeNo() %>";

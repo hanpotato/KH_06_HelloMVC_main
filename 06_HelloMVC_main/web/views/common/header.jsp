@@ -98,7 +98,7 @@
 		<ul class="main-nav">
 			<li class="home"><a href="<%= request.getContextPath() %>">HOME</a></li>
 			<li class="notice"><a href="<%= request.getContextPath() %>/notice/noticeList">공지사항</a></li>
-			<li id="board"><a href="<%= request.getContextPath() %>">게시판</a></li>
+			<li id="board"><a href="<%= request.getContextPath() %>/board/boardList">게시판</a></li>
 			<li id="photo-board"><a href="<%= request.getContextPath() %>">갤러리</a></li>
 			<%if(loginMember!=null&&"admin".equals(loginMember.getUserId())) { %>
 			<li id=""><a href="<%= request.getContextPath() %>/admin/memberList">회원관리<span class="animate_line"></span></a></li>
