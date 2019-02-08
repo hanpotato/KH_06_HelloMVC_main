@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Properties;
 
 import com.rclass.board.model.vo.Board;
+import com.rclass.board.model.vo.BoardComment;
 
 public class BoardDao {
 
@@ -106,6 +107,22 @@ public class BoardDao {
 		return bo;
 	}
 	
+	public int increReadCount(Connection conn, int boardNo) {
+		PreparedStatement pstmt = null;
+		int result = 0;
+		String sql = prop.getProperty("increReadCount");
+		try {
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setInt(1, boardNo);
+			result = pstmt.executeUpdate();
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			close(pstmt);
+		}
+		return result;
+	}
+	
 	public int insertBoard(Connection conn, Board bo) {
 		PreparedStatement pstmt = null;
 		int iResult = 0;
@@ -144,5 +161,55 @@ public class BoardDao {
 			close(pstmt);
 		}
 		return iResult;
+	}
+	
+	public int insertComment(Connection conn, BoardComment comment) {
+		System.out.println(comment.toString());
+		PreparedStatement pstmt = null;
+		int result = 0;
+		String sql = prop.getProperty("insertComment");
+		try {
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setInt(1, comment.getBoardCommentLevel());
+			pstmt.setString(2, comment.getBoardCommentWriter());
+			pstmt.setString(3, comment.getBoardCommentContent());
+			pstmt.setInt(4, comment.getBoardRef());
+			pstmt.setString(5, comment.getBoardCommentRef()==0?null:String.valueOf(comment.getBoardCommentRef()));
+			result = pstmt.executeUpdate();
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			close(pstmt);
+		}
+		return result;
+	}
+	
+	public List<BoardComment> selectCommentAll(Connection conn, int no) {
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		List<BoardComment> list = new ArrayList();
+		String sql = prop.getProperty("selectCommentAll");
+		try {
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setInt(1, no);
+			rs = pstmt.executeQuery();
+			while(rs.next()) {
+				BoardComment bc = new BoardComment();
+				bc.setBoardCommentNo(rs.getInt("board_comment_no"));
+				bc.setBoardCommentLevel(rs.getInt("board_comment_level"));
+				bc.setBoardCommentWriter(rs.getString("board_comment_writer"));
+				bc.setBoardCommentContent(rs.getString("board_comment_content"));
+				bc.setBoardRef(rs.getInt("board_ref"));
+				bc.setBoardCommentRef(rs.getInt("board_comment_ref"));
+				bc.setBoardCommentDate(rs.getDate("board_comment_date"));
+				list.add(bc);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			close(rs);
+			close(pstmt);
+		}
+		return list;
 	}
 }

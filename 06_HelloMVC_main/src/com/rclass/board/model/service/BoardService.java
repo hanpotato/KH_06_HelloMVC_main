@@ -1,15 +1,16 @@
 package com.rclass.board.model.service;
 
+import static common.JDBCTemplate.close;
+import static common.JDBCTemplate.commit;
+import static common.JDBCTemplate.getConnection;
+import static common.JDBCTemplate.rollback;
+
 import java.sql.Connection;
 import java.util.List;
 
 import com.rclass.board.model.dao.BoardDao;
 import com.rclass.board.model.vo.Board;
-
-import static common.JDBCTemplate.getConnection;
-import static common.JDBCTemplate.commit;
-import static common.JDBCTemplate.rollback;
-import static common.JDBCTemplate.close;
+import com.rclass.board.model.vo.BoardComment;
 
 
 public class BoardService {
@@ -37,9 +38,18 @@ public class BoardService {
 		return list;
 	}
 	
-	public Board selectOne(int boardNo) {
+	public Board selectOne(int boardNo, boolean hasRead) {
 		Connection conn = getConnection();
 		Board bo = dao.selectOne(conn,boardNo);
+		if(bo!=null&&!hasRead) {
+			int result=dao.increReadCount(conn,boardNo);
+			if(result>0) {
+				commit(conn);
+			}
+			else {
+				rollback(conn);
+			}
+		}
 		close(conn);
 		return bo;
 	}
@@ -55,5 +65,25 @@ public class BoardService {
 			rollback(conn);
 		}
 		return iResult;
+	}
+	
+	public int insertComment(BoardComment comment) {
+		Connection conn = getConnection();
+		int result = dao.insertComment(conn,comment);
+		if(result>0) {
+			commit(conn);
+		}
+		else {
+			rollback(conn);
+		}
+		close(conn);
+		return result;
+	}
+	
+	public List<BoardComment> selectCommentAll(int no) {
+		Connection conn = getConnection();
+		List<BoardComment> list = dao.selectCommentAll(conn, no);
+		close(conn);
+		return list;
 	}
 }
