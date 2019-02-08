@@ -23,14 +23,19 @@
     table#tbl-comment tr td:first-of-type{padding: 5px 5px 5px 50px;}
     table#tbl-comment tr td:last-of-type {text-align:right; width: 100px;}
     table#tbl-comment button.btn-reply{display:none;}
+    table#tbl-comment button.btn-delete{display:none;}
     table#tbl-comment tr:hover {background:lightgray;}
     table#tbl-comment tr:hover button.btn-reply{display:inline;}
+    table#tbl-comment tr:hover button.btn-delete{display:inline;}
     table#tbl-comment tr.level2 {color:gray; font-size: 14px;}
     table#tbl-comment sub.comment-writer {color:navy; font-size:14px}
     table#tbl-comment sub.comment-date {color:tomato; font-size:10px}
     table#tbl-comment tr.level2 td:first-of-type{padding-left:100px;}
     table#tbl-comment tr.level2 sub.comment-writer {color:#8e8eff; font-size:14px}
     table#tbl-comment tr.level2 sub.comment-date {color:#ff9c8a; font-size:10px}
+    
+    table#tbl-comment textarea{margin: 4px 0 0 0;}
+    table#tbl-comment button.btn-insert2{width:60px; height:23px; color:white; background:#3300ff; position:relative; top:-5px; left:10px;}
 </style>
 
 <section id="board-container">
@@ -65,14 +70,14 @@
 								rName = encodeURIComponent(rName);
 								oName = encodeURIComponent(oName);
 								location.href="<%= request.getContextPath() %>/board/boardFileDownload?rName="+rName+"&oName="+oName;
-							}
+							};
 						</script>
 					<% } %>
 				</td>
 			</tr>
 			<tr>
 				<th>내용</th>
-				<td><%= bo.getBoardContent() %></td>
+				<td><%= bo.getBoardContent() %></td>				
 			</tr>
 			<% if(loginMember!=null&&(loginMember.getUserId().equals("admin")||loginMember.getUserId().equals(bo.getBoardWriter()))) { %>
 				<tr>
@@ -97,7 +102,8 @@
 		</div>
 		<table id="tbl-comment">
 			<% if(comments!=null) {
-				for(BoardComment bc:comments) { %>
+				for(BoardComment bc:comments) { 
+					if(bc.getBoardCommentLevel()==1) { %>
 					<tr class="level1">
 						<td>
 							<sub class="comment-writer"><%= bc.getBoardCommentWriter() %></sub>
@@ -107,11 +113,65 @@
 						</td>
 						<td>
 							<button class="btn-reply" value="<%= bc.getBoardCommentNo() %>">답글</button>
+							<% if(loginMember!=null&&(bc.getBoardCommentWriter().equals(loginMember.getUserId())||"admin".equals(loginMember.getUserId()))) { %>
+								<button class="btn-delete" value="<%= bc.getBoardCommentNo() %>">삭제</button>
+							<% } %>
 						</td>
 					</tr>
+					<% } else { %>
+					<tr class='level2'>
+						<td>
+							<sub><%=bc.getBoardCommentWriter() %></sub>
+							<sub><%=bc.getBoardCommentDate() %></sub>
+							<br/>
+							<%= bc.getBoardCommentContent() %>
+						</td>
+						<td></td>
+					</tr>
+					<% } %>
 			<% }
 			}%>
 		</table>
+		<script>
+			$(".btn-reply").on("click", function(){
+				<% if(loginMember!=null) { %>
+					var tr = $("<tr></tr>");
+					var html = "<td style='display:none;text-align:left;' colspan='2'>";
+					html+="<form action='<%= request.getContextPath() %>/board/boardCommentInsert' method='post'>";
+					html+="<input type='hidden' name='boardRef' value='<%= bo.getBoardNo() %>'/>";
+					html+="<input type='hidden' name='boardCommentWriter' value='<%= loginMember.getUserId() %>'/>";
+					html+="<input type='hidden' name='boardCommentLevel' value='2'/>";
+					html+="<input type='hidden' name='boardCommentRef' value='"+$(this).val()+"'/>";
+					html+="<textarea cols='60' rows='1' name='boardCommentContent'></textarea>";
+					html+="<button type='submit' class='btn-insert2'>등록</button>";
+					html+="</form></td>";
+					tr.html(html);
+					tr.insertAfter($(this).parent().parent()).children("td").slideDown(800);
+					
+					$(this).off("click");
+					
+					tr.find("form").submit(function() {
+						if(<%= loginMember == null %>) {
+							fn_loginAlert();
+							event.preventDefault();
+							return;
+						}
+						var content = $(this).children('textarea').val().trim().length;
+						if(content==0) {
+							alert("내용을 입력하세요");
+							event.preventDefault();
+							return;
+						}
+					});
+				<% } else { %>
+					fn_loginAlert();
+				<% } %>
+			});
+			$(".btn-delete").on("click", function() {
+				if(!confirm('정말로 삭제하시겠습니까?')) return;
+				location.href="<%= request.getContextPath() %>/board/boardCommentDelete?boardNo=<%= bo.getBoardNo() %>&delNo="+$(this).val();
+			})
+		</script>
 	</div>
 	<script>
 		$(function() {

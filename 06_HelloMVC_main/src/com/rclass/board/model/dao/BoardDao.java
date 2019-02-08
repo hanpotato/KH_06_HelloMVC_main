@@ -212,4 +212,21 @@ public class BoardDao {
 		}
 		return list;
 	}
+	
+	public int deleteBoard(Connection conn, BoardComment bc) {
+		PreparedStatement pstmt = null;
+		int result = 0;
+		String sql = prop.getProperty("deleteBoard");
+		try {
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setInt(1, bc.getBoardCommentNo());
+			pstmt.setInt(2, bc.getBoardCommentNo());
+			result = pstmt.executeUpdate();
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			close(pstmt);
+		}
+		return result;
+	}
 }

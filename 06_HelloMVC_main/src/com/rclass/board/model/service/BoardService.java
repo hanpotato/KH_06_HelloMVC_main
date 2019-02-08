@@ -86,4 +86,17 @@ public class BoardService {
 		close(conn);
 		return list;
 	}
+	
+	public int deleteBoard(BoardComment bc) {
+		Connection conn = getConnection();
+		int result = new BoardDao().deleteBoard(conn,bc);
+		if(result>0) {
+			commit(conn);
+		}
+		else {
+			rollback(conn);
+		}
+		close(conn);
+		return result;
+	}
 }
