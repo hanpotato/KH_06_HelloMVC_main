@@ -87,6 +87,13 @@
 		</tr>
 		<tr>
 			<td>
+				<input type="button" value="채팅방입장" onclick="fn_chatting()"/>
+				<script>
+					function fn_chatting() {
+						/* open("http://192.168.20.20:9000","_blank","width='200px' height='500px'"); */
+						open("http://localhost:9000","_blank","width='200px' height='500px'");
+					}
+				</script>
 				<input type="button" value="내정보보기" onclick="location.href='<%=request.getContextPath()%>/memberUpdate?userId=<%= loginMember.getUserId() %>'"/>
 				<input type="button" value="로그아웃" onclick="location.href='<%=request.getContextPath()%>/logout'"/>
 			</td>
